@@ -44,11 +44,10 @@ function TodoListEntry:Update(Data)
     if not Data then return end
     if Data.Line then
         self.TextLabel.Font = Enum.Font.SourceSans
-        self.TextLabel.Text = Data.Text
     else
         self.TextLabel.Font = Enum.Font.SourceSansBold
-        self.TextLabel.Text = Data.Script:GetFullName()
     end
+    self.TextLabel.Text = Data.Text
 end
 
 

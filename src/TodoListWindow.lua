@@ -8,6 +8,7 @@ local RunService = game:GetService("RunService")
 
 local NexusPluginComponents = require(script.Parent:WaitForChild("NexusPluginComponents"))
 local PluginInstance = NexusPluginComponents:GetResource("Base.PluginInstance")
+local ScriptMonitor = require(script.Parent:WaitForChild("ScriptMonitor"))
 local TodoListEntry = require(script.Parent:WaitForChild("TodoListEntry"))
 
 local TodoListWindow = PluginInstance:Extend()
@@ -116,28 +117,22 @@ function TodoListWindow:InitializeList()
     self:DisableChangeReplication("ElementList")
     self.ElementList = ElementList
 
-    --TODO: Temporary.
-    ElementList:SetEntries({
-        {
-            Indent = 1,
-            Script = game.Workspace,
-            Children = {"test1", "test2"},
-        },
-        {
-            Indent = 2,
-            Script = game.Workspace,
-            Line = 4,
-            Text = "(4) TODO: Test1",
-            Children = {},
-        },
-        {
-            Indent = 2,
-            Script = game.Workspace,
-            Line = 6,
-            Text = "(6) TODO: Test2",
-            Children = {},
-        },
-    })
+    --Set up searching.
+    self.SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
+        self:UpdateEntries()
+    end)
+
+    --Create the script monitor.
+    local Monitor = ScriptMonitor.new(self)
+    Monitor:Start()
+end
+
+--[[
+Updates the list entries.
+--]]
+function TodoListWindow:UpdateEntries()
+    --TODO: Filter search.
+    self.ElementList:SetEntries(self.SelectionList:GetDescendants())
 end
 
 
