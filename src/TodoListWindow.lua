@@ -110,6 +110,9 @@ function TodoListWindow:InitializeList()
     local ElementList = NexusPluginComponents.new("ElementList", function()
         local Frame = TodoListEntry.new()
         Frame.SelectionList = self.SelectionList
+        Frame.UpdateElementList = function()
+            self:UpdateEntries()
+        end
         return Frame
     end)
     ElementList.EntryHeight = 20
@@ -131,8 +134,45 @@ end
 Updates the list entries.
 --]]
 function TodoListWindow:UpdateEntries()
-    --TODO: Filter search.
-    self.ElementList:SetEntries(self.SelectionList:GetDescendants())
+    --Get the entries that match the search.
+    local Search = string.lower(self.SearchBar.Text)
+    local Entries = {}
+    for _, Entry in pairs(self.SelectionList.Children) do
+        --Get the entries that match the search.
+        local Children = {}
+        for _, SubEntry in pairs(Entry.Children) do
+            if string.find(string.lower(SubEntry.Text), Search) then
+                table.insert(Children, SubEntry)
+            end
+        end
+
+        --Craete the new entry.
+        if #Children ~= 0 then
+            local NewEntry = {
+                Children = Children,
+            }
+            setmetatable(NewEntry, {
+                __index = Entry,
+                __newindex = Entry,
+            })
+            table.insert(Entries, Entry)
+            if Entry.Expanded then
+                for _, Child in pairs(Children) do
+                    table.insert(Entries, Child)
+                end
+            end
+        end
+    end
+
+    --Set the entries.
+    self.ElementList:SetEntries(Entries)
+
+    --Update the maximum width.
+    local MaxWidth = 100
+    for _, Entry in pairs(Entries) do
+        MaxWidth = math.max(MaxWidth, 4 + ((Entry.Indent - 1) * 20) + Entry.TextWidth)
+    end
+    self.ElementList.CurrentWidth = MaxWidth
 end
 
 

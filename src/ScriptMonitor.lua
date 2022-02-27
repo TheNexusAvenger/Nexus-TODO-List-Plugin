@@ -99,7 +99,7 @@ function ScriptMonitor:UpdateScriptEntry(Script)
             ChildEntry.Text = Text
             ChildEntry.Line = LineData[1]
             ChildEntry.Script = Script
-            ChildEntry.TextWidth = TextService:GetTextSize(ScriptName, 14, Enum.Font.SourceSans, Vector2.new(2000, 16)).X
+            ChildEntry.TextWidth = TextService:GetTextSize(Text, 14, Enum.Font.SourceSans, Vector2.new(2000, 16)).X
             ChangesMade = true
         end
     end
