@@ -97,6 +97,18 @@ end
 Initailizes the list.
 --]]
 function TodoListWindow:InitializeList()
+    --Create the text for no entries.
+    local NoEntriesText = NexusPluginComponents.new("TextLabel")
+    NoEntriesText.Size = UDim2.new(1, 0, 0, 16)
+    NoEntriesText.Position = UDim2.new(0, 2, 0, 29)
+    NoEntriesText.Text = "No TODO comments found in scripts."
+    NoEntriesText.TextColor3 = Enum.StudioStyleGuideColor.SubText
+    NoEntriesText.Font = Enum.Font.SourceSansItalic
+    NoEntriesText.ZIndex = 3
+    NoEntriesText.Parent = self.Background
+    self:DisableChangeReplication("NoEntriesText")
+    self.NoEntriesText = NoEntriesText
+
     --Create the scrolling frame.
     local ScrollingFrame = NexusPluginComponents.new("ScrollingFrame")
     ScrollingFrame.Position = UDim2.new(0, 0, 0, 28)
@@ -166,6 +178,7 @@ function TodoListWindow:UpdateEntries()
 
     --Set the entries.
     self.ElementList:SetEntries(Entries)
+    self.NoEntriesText.Visible = (#Entries == 0)
 
     --Update the maximum width.
     local MaxWidth = 100
