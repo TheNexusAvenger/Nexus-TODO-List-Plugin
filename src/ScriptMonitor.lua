@@ -78,6 +78,9 @@ function ScriptMonitor:UpdateScriptEntry(Script)
         Entry.Script = Script
         Entry.TextWidth = TextService:GetTextSize(ScriptName, 14, Enum.Font.SourceSansBold, Vector2.new(2000, 16)).X
         ChangesMade = true
+        table.sort(self.SelectionList.Children, function(EntryA, EntryB)
+            return string.lower(EntryA.Text) < string.lower(EntryB.Text)
+        end)
     end
 
     --Create the child entries.
