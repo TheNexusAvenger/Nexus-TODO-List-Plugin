@@ -3,24 +3,31 @@ TheNexusAvenger
 
 Window of the TODO list plugin.
 --]]
+--!strict
 
 local RunService = game:GetService("RunService")
 
 local NexusPluginComponents = require(script.Parent:WaitForChild("NexusPluginComponents"))
-local PluginInstance = NexusPluginComponents:GetResource("Base.PluginInstance")
+local PluginInstance = require(script.Parent:WaitForChild("NexusPluginComponents"):WaitForChild("Base"):WaitForChild("PluginInstance"))
 local ScriptMonitor = require(script.Parent:WaitForChild("ScriptMonitor"))
 local TodoListEntry = require(script.Parent:WaitForChild("TodoListEntry"))
 
 local TodoListWindow = PluginInstance:Extend()
 TodoListWindow:SetClassName("TodoListWindow")
 
+export type TodoListWindow = {
+    new: (Plugin: Plugin) -> (TodoListWindow),
+    Extend: (self: TodoListWindow) -> (TodoListWindow),
+
+} & PluginInstance.PluginInstance & DockWidgetPluginGui
+
 
 
 --[[
 Creates the TODO List Window.
 --]]
-function TodoListWindow:__new(Plugin)
-    self:InitializeSuper(Plugin:CreateDockWidgetPluginGui("TODO List", DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Bottom, false, false, 300, 100, 200, 50)))
+function TodoListWindow:__new(Plugin: Plugin)
+    PluginInstance.__new(self, Plugin:CreateDockWidgetPluginGui("TODO List", DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Bottom, false, false, 300, 100, 200, 50)))
     self.Title = "TODO List"
     self.Name = "TODO List"
     TodoListEntry.Plugin = Plugin
@@ -61,7 +68,7 @@ end
 --[[
 Prompts to continue before initializing.
 --]]
-function TodoListWindow:PromptToContinue()
+function TodoListWindow:PromptToContinue(): ()
     --Create the button.
     local ContinueButton = NexusPluginComponents.new("TextButton")
     ContinueButton.BackgroundColor3 = Enum.StudioStyleGuideColor.DialogMainButton
@@ -96,7 +103,7 @@ end
 --[[
 Initailizes the list.
 --]]
-function TodoListWindow:InitializeList()
+function TodoListWindow:InitializeList(): ()
     --Create the text for no entries.
     local NoEntriesText = NexusPluginComponents.new("TextLabel")
     NoEntriesText.Size = UDim2.new(1, 0, 0, 16)
@@ -145,14 +152,14 @@ end
 --[[
 Updates the list entries.
 --]]
-function TodoListWindow:UpdateEntries()
+function TodoListWindow:UpdateEntries(): ()
     --Get the entries that match the search.
     local Search = string.lower(self.SearchBar.Text)
     local Entries = {}
-    for _, Entry in pairs(self.SelectionList.Children) do
+    for _, Entry in self.SelectionList.Children do
         --Get the entries that match the search.
         local Children = {}
-        for _, SubEntry in pairs(Entry.Children) do
+        for _, SubEntry in Entry.Children do
             if string.find(string.lower(SubEntry.Text), Search) then
                 table.insert(Children, SubEntry)
             end
@@ -169,7 +176,7 @@ function TodoListWindow:UpdateEntries()
             })
             table.insert(Entries, Entry)
             if Entry.Expanded then
-                for _, Child in pairs(Children) do
+                for _, Child in Children do
                     table.insert(Entries, Child)
                 end
             end
@@ -182,7 +189,7 @@ function TodoListWindow:UpdateEntries()
 
     --Update the maximum width.
     local MaxWidth = 100
-    for _, Entry in pairs(Entries) do
+    for _, Entry in Entries do
         MaxWidth = math.max(MaxWidth, 4 + ((Entry.Indent - 1) * 20) + Entry.TextWidth)
     end
     self.ElementList.CurrentWidth = MaxWidth
@@ -190,4 +197,4 @@ end
 
 
 
-return TodoListWindow
+return (TodoListWindow :: any) :: TodoListWindow

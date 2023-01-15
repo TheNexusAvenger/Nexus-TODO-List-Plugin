@@ -3,6 +3,7 @@ TheNexusAvenger
 
 Helper class for monitoring scripts for TODO comments.
 --]]
+--!strict
 
 local BLACKLISTED_SERVICES = {
     CoreGui = true
@@ -12,19 +13,25 @@ local BLACKLISTED_SERVICES = {
 
 local TextService = game:GetService("TextService")
 
-local NexusPluginComponents = require(script.Parent:WaitForChild("NexusPluginComponents"))
-local NexusObject = NexusPluginComponents:GetResource("NexusInstance.NexusObject")
+local NexusObject = require(script.Parent:WaitForChild("NexusPluginComponents"):WaitForChild("NexusInstance"):WaitForChild("NexusObject"))
 
 local ScriptMonitor = NexusObject:Extend()
 ScriptMonitor:SetClassName("ScriptMonitor")
+
+export type ScriptMonitor = {
+    new: (TodoListWindow: any) -> (ScriptMonitor),
+    Extend: (self: ScriptMonitor) -> (ScriptMonitor),
+
+    Start: (self: ScriptMonitor) -> (),
+} & NexusObject.NexusObject
 
 
 
 --[[
 Craetes the Script Monitor.
 --]]
-function ScriptMonitor:__new(TodoListWindow)
-    self:InitializeSuper()
+function ScriptMonitor:__new(TodoListWindow: any): ()
+    NexusObject.__new(self)
 
     self.TodoListWindow = TodoListWindow
     self.SelectionList = TodoListWindow.SelectionList
@@ -37,17 +44,17 @@ end
 --[[
 Updates a script entry.
 --]]
-function ScriptMonitor:UpdateScriptEntry(Script)
+function ScriptMonitor:UpdateScriptEntry(Script: CoreScript | BaseScript | ModuleScript): ()
     --Get the lines.
     local Lines = {}
     local LineCount = 0
     if Script:IsDescendantOf(game) then
-        for _, Line in pairs(string.split(Script.Source, "\n")) do
+        for _, Line in string.split((Script :: any).Source, "\n") do
             LineCount = LineCount + 1
             local LowerLine = string.lower(Line)
             local TodoIndex = string.find(LowerLine, "to[[%-_]-]?do")
             if TodoIndex then
-                table.insert(Lines, {LineCount, string.sub(Line, TodoIndex)})
+                table.insert(Lines, {LineCount, string.sub(Line, TodoIndex)} :: {any})
             end
         end
     end
@@ -92,7 +99,7 @@ function ScriptMonitor:UpdateScriptEntry(Script)
     end
 
     --Set the child entries.
-    for i, LineData in pairs(Lines) do
+    for i, LineData in Lines do
         local ChildEntry = Entry.Children[i]
         local Text = "("..tostring(LineData[1])..") "..LineData[2]
         if ChildEntry.Text ~= Text then
@@ -113,7 +120,7 @@ end
 --[[
 Starts monitoring a script.
 --]]
-function ScriptMonitor:StartMonitorScript(Script)
+function ScriptMonitor:StartMonitorScript(Script: CoreScript | BaseScript | ModuleScript): ()
     --Return if the script isn't a script.
     local Worked, IsScript = pcall(function()
         return not Script:IsA("CoreScript") and (Script:IsA("BaseScript") or Script:IsA("ModuleScript"))
@@ -140,10 +147,10 @@ end
 --[[
 Starts the script monitor.
 --]]
-function ScriptMonitor:Start()
+function ScriptMonitor:Start(): ()
     --Get the services that are valid to scan.
     local Serivces = {}
-    for _, Service in pairs(game:GetChildren()) do
+    for _, Service in game:GetChildren() do
         pcall(function()
             if not BLACKLISTED_SERVICES[Service.Name] then
                 table.insert(Serivces, Service)
@@ -152,8 +159,8 @@ function ScriptMonitor:Start()
     end
 
     --Initialize the scripts in the services.
-    for _, Service in pairs(Serivces) do
-        for _, Script in pairs(Service:GetDescendants()) do
+    for _, Service in Serivces do
+        for _, Script in Service:GetDescendants() do
             self:StartMonitorScript(Script)
         end
         Service.DescendantAdded:Connect(function(Script)
@@ -164,4 +171,4 @@ end
 
 
 
-return ScriptMonitor
+return (ScriptMonitor :: ScriptMonitor) :: ScriptMonitor

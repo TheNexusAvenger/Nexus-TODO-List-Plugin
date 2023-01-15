@@ -1,0 +1,12 @@
+{
+    "name": "Nexus-TODO-List-Plugin",
+    "tree": {
+        "$className": "DataModel",
+        "ReplicatedStorage": {
+            "$className": "ReplicatedStorage",
+            "NexusTODOListPlugin": {
+                "$path": "."
+            }
+        }
+    }
+}

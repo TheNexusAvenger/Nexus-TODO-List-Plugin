@@ -3,6 +3,7 @@ TheNexusAvenger
 
 Runs the TODO list plugin.
 --]]
+--!strict
 
 local NexusPluginComponents = require(script:WaitForChild("NexusPluginComponents"))
 local TodoListWindow = require(script:WaitForChild("TodoListWindow"))

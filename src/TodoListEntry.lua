@@ -3,20 +3,28 @@ TheNexusAvenger
 
 Entry of the TODO list.
 --]]
+--!strict
 
 local NexusPluginComponents = require(script.Parent:WaitForChild("NexusPluginComponents"))
-local CollapsableListFrame = NexusPluginComponents:GetResource("Input.Custom.CollapsableListFrame")
+local CollapsableListFrame = NexusPluginComponents:GetResource("Input.Custom.CollapsableListFrame") :: NexusPluginComponents.CollapsableListFrame
 
 local TodoListEntry = CollapsableListFrame:Extend()
 TodoListEntry:SetClassName("TodoListEntry")
+
+export type TodoListEntry = {
+    new: () -> (TodoListEntry),
+    Extend: (self: TodoListEntry) -> (TodoListEntry),
+
+    Update: (self: TodoListEntry, Data: any) -> (),
+} & NexusPluginComponents.CollapsableListFrame
 
 
 
 --[[
 Creates the TODO List Entry.
 --]]
-function TodoListEntry:__new()
-    self:InitializeSuper()
+function TodoListEntry:__new(): ()
+    CollapsableListFrame.__new(self)
 
     --Craete the text.
     local TextLabel = NexusPluginComponents.new("TextLabel")
@@ -37,8 +45,8 @@ end
 --[[
 Updates the entry.
 --]]
-function TodoListEntry:Update(Data)
-    self.super:Update(Data)
+function TodoListEntry:Update(Data: any): ()
+    CollapsableListFrame.Update(self, Data)
 
     --Update the text.
     if not Data then return end
@@ -52,4 +60,4 @@ end
 
 
 
-return TodoListEntry
+return (TodoListEntry :: any) :: TodoListEntry
