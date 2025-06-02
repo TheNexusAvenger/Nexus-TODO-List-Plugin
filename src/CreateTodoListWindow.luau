@@ -3,11 +3,12 @@
 
 local RunService = game:GetService("RunService")
 
-local CreateExpandableList = require(script.Parent:WaitForChild("NexusPluginComponents"):WaitForChild("List"):WaitForChild("CreateExpandableList"))
-local CreateFusionScope = require(script.Parent:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
-local Fusion = require(script.Parent:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
+local NexusPluginComponents = require(script.Parent:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 local ScriptMonitor = require(script.Parent:WaitForChild("ScriptMonitor"))
 
+local CreateExpandableList = NexusPluginComponents.List.CreateExpandableList
+local CreateFusionScope = NexusPluginComponents.CreateFusionScope
+local Fusion = NexusPluginComponents.Fusion
 local Children = Fusion.Children
 local Out = Fusion.Out
 

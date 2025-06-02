@@ -1,0 +1,16 @@
+[package]
+name = "thenexusavenger/nexus-todo-list-plugin"
+repository = "https://github.com/TheNexusAvenger/Nexus-TODO-List-Plugin"
+description = "Roblox plugin for showing TODO entries in comments."
+license = "MIT"
+authors = ["TheNexusAvenger"]
+version = "1.1.2"
+
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+exclude = ["**"]
+include = ["src", "src/*", "default.project.json", "wally.lock", "wally.toml"]
+
+[dependencies]
+NexusPluginComponents = "thenexusavenger/nexus-plugin-components@1.2.0"

@@ -7,9 +7,10 @@ local BLACKLISTED_SERVICES = {
 
 local TextService = game:GetService("TextService")
 
-local SelectionListEntry = require(script.Parent:WaitForChild("NexusPluginComponents"):WaitForChild("List"):WaitForChild("SelectionListEntry"))
-local CreateFusionScope = require(script.Parent:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
-local Fusion = require(script.Parent:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
+local NexusPluginComponents = require(script.Parent:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
+
+local SelectionListEntry = NexusPluginComponents.List.SelectionListEntry
+local Fusion = NexusPluginComponents.Fusion
 
 local ScriptMonitor = {}
 ScriptMonitor.__index = ScriptMonitor
@@ -26,11 +27,11 @@ export type ScriptEntry = {
     }?,
 }
 export type ScriptMonitor = {
-    Scope: CreateFusionScope.FusionScope,
-    Filter: Fusion.Value<string>,
+    Scope: NexusPluginComponents.FusionScope,
+    Filter: NexusPluginComponents.Value<string>,
     TrackedScripts: {[Instance]: boolean},
-    RootSelectionListEntry: SelectionListEntry.SelectionListEntry<ScriptEntry>,
-    ScriptsToEntries: {[Instance]: SelectionListEntry.SelectionListEntry<ScriptEntry>},
+    RootSelectionListEntry: NexusPluginComponents.SelectionListEntry<ScriptEntry>,
+    ScriptsToEntries: {[Instance]: NexusPluginComponents.SelectionListEntry<ScriptEntry>},
 } & typeof(setmetatable({}, ScriptMonitor))
 
 
@@ -38,7 +39,7 @@ export type ScriptMonitor = {
 --[[
 Craetes the Script Monitor.
 --]]
-function ScriptMonitor.new(Scope: CreateFusionScope.FusionScope, Filter: Fusion.Value<string>): ScriptMonitor
+function ScriptMonitor.new(Scope: NexusPluginComponents.FusionScope, Filter: NexusPluginComponents.Value<string>): ScriptMonitor
     --Create the object.
     local self = setmetatable({
         Scope = Scope,

@@ -1,8 +1,10 @@
 --Runs the TODO list plugin.
 --!strict
 
-local CreatePluginToggleButton = require(script:WaitForChild("NexusPluginComponents"):WaitForChild("Input"):WaitForChild("Plugin"):WaitForChild("CreatePluginToggleButton"))
+local NexusPluginComponents = require(script:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 local CreateTodoListWindow = require(script:WaitForChild("CreateTodoListWindow"))
+
+local CreatePluginToggleButton = NexusPluginComponents.Input.Plugin.CreatePluginToggleButton
 
 
 

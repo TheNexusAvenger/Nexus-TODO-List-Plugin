@@ -2,8 +2,8 @@
     "name": "NexusTODOListPlugin",
     "tree": {
         "$path": "src",
-        "NexusPluginComponents": {
-            "$path": "module/Nexus-Plugin-Components/"
+        "Packages": {
+            "$path": "./Packages"
         }
     }
 }
